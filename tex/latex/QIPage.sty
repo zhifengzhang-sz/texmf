@@ -18,12 +18,10 @@
             \pagecolor{#1}
             \def\qi@pagebackground{#1}
             \colorlet{pagebackground}{#1}},
-    background/.default=white,
     foreground/.code={
             \color{#1}
             \def\qi@pageforeground{#1}
             \colorlet{pageforeground}{#1}},
-    foreground/.default=black,
     deco/.store in=\decocolor,
     deco/.default=white!50!secondary2,
     chaptertitle/.store in=\chaptertitlecolor,
@@ -56,8 +54,10 @@
         },
     headfoot/headfootpkg/.default=scrlayer,
     headfoot/color/.code={
-        \addtokomafont{pageheadfoot}{\color{#1}}
-        \addtokomafont{pagenumber}{\color{#1}}},
+        \addtokomafont{pagehead}{\color{#1}}
+        \addtokomafont{pagefoot}{\color{#1}}
+        \addtokomafont{pagenumber}{\color{#1}}
+        },
     headfoot/color/.default=secondary2
 }
 \pgfkeys{/qi/common/theme settings/page,
@@ -76,7 +76,7 @@
     lenny/.style={
             color/light,
             headfoot/headfootpkg,
-            headfoot/color=complement,
+            headfoot/color,
             color/chaptertitle,
             color/deco,
             font/chaptertitle,

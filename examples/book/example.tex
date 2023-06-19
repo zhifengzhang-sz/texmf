@@ -1,0 +1,134 @@
+%\documentclass[11pt,dark=4508]{QIBook}
+\documentclass[11pt,light=4405]{QIBook}
+%--------------------------------------------------------------------------------------------------
+% title page style
+%--------------------------------------------------------------------------------------------------
+%\usepackage[quil={bg=black,fg=white}]{QITitlePage}
+% \usepackage[hexagon={primary,white,secondary2,1993}]{QITitlePage}
+% \usepackage[martinhelso={tb=bw,bg=images/a4/bw_130x297_2}]{QITitlePage}
+\usepackage[martinhelso={title box=bw,background image=images/a4/color_210x297_1.png}]{QITitlePage}
+%--------------------------------------------------------------------------------------------------
+% loading lipsum, table, enumitem and pgfplots
+%--------------------------------------------------------------------------------------------------
+\usepackage[T1]{fontenc}
+\usepackage[english]{babel}
+\usepackage{lipsum}
+\usepackage{tabularx,colortbl}
+\usepackage{enumitem}
+\usepackage{pgfplots}
+%--------------------------------------------------------------------------------------------------
+% configuring pgfplots
+%--------------------------------------------------------------------------------------------------
+\pgfplotsset{compat = newest}
+\usetikzlibrary{positioning, arrows.meta}
+\usepgfplotslibrary{fillbetween}
+%--------------------------------------------------------------------------------------------------
+% loading the pre-defined tkz graph
+%--------------------------------------------------------------------------------------------------
+\input{../tkz/arbelos.tex}
+\input{../tkz/notations.tex}
+\input{../tkz/midpoints.tex}
+\input{../tkz/goldenrationseg.tex}
+%--------------------------------------------------------------------------------------------------
+% loading the pre-defined pgfplots graph
+%--------------------------------------------------------------------------------------------------
+
+\makeatletter
+\newcommand{\lighter}[2]{
+    \color{\color@lighter{#1}{#2}}
+}
+\newcommand{\darken}[2]{
+    \color{\color@darken{#1}{#2}}
+}
+\makeatother
+\newcommand{\textcolordemo}{
+    \begin{wrapfigure}[1]{r}*
+        \tiny
+        \begin{tcblist}[width=.65\linewidth]{Color palette as foreground}
+            \begin{itemize}[leftmargin=*]
+                \item {\color{primary}{\bf Primary:\ }\lipsum[1]}
+                \item {\color{secondary}{\bf Secondary:\ }\lipsum[2]}
+                \item {\color{secondary2}{\bf Secondary2:\ }\lipsum[3]}
+                \item {\color{tertiary}{\bf Tertiary:\ }\lipsum[4]}
+                \item {\color{complement}{\bf Complement:\ }\lipsum[5]}
+            \end{itemize}
+        \end{tcblist}
+    \end{wrapfigure}
+}
+\newcommand{\bgcolordemo}{
+    \begin{wrapfigure}[1]{l}*
+    \tiny
+    \begin{tcblist}[width=.65\linewidth]{Color palette as background}
+    \begin{itemize}[leftmargin=*]
+        \item {\colorbox{primary}{\parbox[t]{.95\linewidth}{\color{primaryc}{\bf Primary:\ }\lipsum[1]}}}
+        \item {\colorbox{secondary}{\parbox[t]{.95\linewidth}{\color{secondaryc}{\bf Secondary:\ }\lipsum[2]}}}
+        \item {\colorbox{secondary2}{\parbox[t]{.95\linewidth}{\color{secondary2c}{\bf Secondary2:\ }\lipsum[3]}}}
+        \item {\colorbox{tertiary}{\parbox[t]{.95\linewidth}{\color{tertiaryc}{\bf Tertiary:\ }\lipsum[4]}}}
+        \item {\colorbox{complement}{\parbox[t]{.95\linewidth}{\color{complementc}{\bf Complement:\ }\lipsum[5]}}}
+    \end{itemize}
+    \end{tcblist}
+\end{wrapfigure}
+}
+\begin{document}
+\titlehead{Topics in Mathematics }
+\subject{Signal Processing }
+\title{Adapted Wavelet Analysis from\\ Theory to Software }
+\subtitle{}
+\author{Mladen Victor Wickerhauser }
+\date{1993}
+\publishers{A K Peters }
+\makeatletter
+\qi@titlepage
+\makeatother
+\frontmatter
+\tableofcontents
+\mainmatter
+\pagestyle{headings}
+\chapter{Color Palette}
+\lipsum[6]
+\section{Using palette as foreground color}
+\lipsum[7]
+\textcolordemo
+\lipsum[8-12]
+\section{Using palette as background color}
+\lipsum[7]
+\bgcolordemo
+\lipsum[8-12]
+\section{Defining color model}
+\subsection{Direct definitions}
+\pgfkeys{/qi/common/color
+    ,primary={HTML}{BF8709}
+    ,secondary={HTML}{EAC57D}
+    ,secondary2={HTML}{B9BBDE}
+    ,tertiary={HTML}{807490}
+    ,complement={HTML}{523857}
+}
+\lipsum[7]
+\textcolordemo
+\lipsum[8-12]
+\subsection{Using API}
+\qicolormodel{4574}{583E26}{A78B71}{F7C815}{EC9704}{9C4A1A}
+\lipsum[7]
+\textcolordemo
+\lipsum[8-12]
+\section{Model text}
+\qicolormodel{4502}{BF8709}{EAC57D}{B9BBDE}{807490}{523857}
+\qicolormodeltext{4502}{f2f3f4}{131516}{131516}{f2f3f4}{f2f3f4}
+\lipsum[7]
+\bgcolordemo
+\lipsum[8-12]
+\section{Tint and shade}
+\subsection{Tint}
+\begin{itemize}
+    \item {\lighter{primary}{25}primary lighter by 25}
+    \item {\lighter{primary}{50}primary lighter by 50}
+    \item {\lighter{primary}{75}primary lighter by 75}
+\end{itemize}
+
+\subsection{Shade}
+\begin{itemize}
+    \item {\darken{primary}{25}primary darken by 25}
+    \item {\darken{primary}{50}primary darken by 50}
+    \item {\darken{primary}{75}primary darken by 75}
+\end{itemize}
+\end{document}

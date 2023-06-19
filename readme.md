@@ -23,4 +23,5 @@
 The following command can be used:
 ```bash
 ./config.sh ~/texmf
+export TEXMFHOME=~/texmf
 ```
