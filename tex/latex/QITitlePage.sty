@@ -1,0 +1,235 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{QITitlePage}[2023/06/06 QI Title Page Package]
+\RequirePackage{tikz}
+\usetikzlibrary{shapes.geometric,calc,backgrounds}
+\RequirePackage{pgfkeys}
+\RequirePackage{pgffor}
+\RequirePackage{pgfopts}
+
+\def\titlepagepath{/qi/common/theme settings/title page}
+\newlength{\titlebox@width}
+\newlength{\titlebox@height}
+\newlength{\titlebox@topoffset}
+\newlength{\titlebox@titlehead@width}
+\newlength{\titlebox@titlehead@height}
+\newlength{\titlebox@title@width}
+\newlength{\titlebox@title@height}
+\pgfkeys{\titlepagepath/.is family}
+\pgfkeys{\titlepagepath,
+    titlebox/width/.code={\setlength{\titlebox@width}{#1}},
+    titlebox/height/.code={\setlength{\titlebox@height}{#1}},
+    titlebox/topoffset/.code={\setlength{\titlebox@topoffset}{#1\paperheight}},
+    titlebox/titlehead/width/.code={\setlength{\titlebox@titlehead@width}{#1\titlebox@width}},
+    titlebox/titlehead/height/.code={\setlength{\titlebox@titlehead@height}{#1\titlebox@height}},
+    titlebox/titlehead/opacity/.store in=\titlebox@titlehead@opacity,
+    titlebox/titlehead/foreground/.store in=\titlebox@titlehead@foreground,
+    titlebox/titlehead/background/.store in=\titlebox@titlehead@background,
+    titlebox/title/width/.code={\setlength{\titlebox@title@width}{#1\titlebox@width}},
+    titlebox/title/height/.code={\setlength{\titlebox@title@height}{#1\titlebox@height}},
+    titlebox/title/opacity/.store in=\titlebox@title@opacity,
+    titlebox/title/foreground/.store in=\titlebox@title@foreground,
+    titlebox/title/background/.store in=\titlebox@title@background,
+    % titlebox installer
+    tbi/.style args={#1(#2,#3,#4,#5,#6)}{titlebox/#1/.style={
+                    titlebox/width=#2,
+                    titlebox/height=#3,
+                    titlebox/topoffset=#4,
+                    foreground=#5,
+                    background=#6}},
+    % titlebox title head installer
+    tbthi/.style args={#1(#2,#3,#4,#5,#6)}{titlebox/titlehead/#1/.style={
+                    titlebox/titlehead/width=#2,
+                    titlebox/titlehead/height=#3,
+                    titlebox/titlehead/opacity=#4,
+                    titlebox/titlehead/foreground=#5,
+                    titlebox/titlehead/background=#6
+                }},
+    % titlebox title installer
+    tbti/.style args={#1(#2,#3,#4,#5,#6)}{titlebox/title/#1/.style={
+                    titlebox/title/width=#2,
+                    titlebox/title/height=#3,
+                    titlebox/title/opacity=#4,
+                    titlebox/title/foreground=#5,
+                    titlebox/title/background=#6
+                }}
+}
+\pgfkeys{\titlepagepath,
+    deco/color/.store in=\titlepage@decocolor,
+    deco/text/.store in=\titlepage@decotext
+}
+\pgfkeys{\titlepagepath,
+    background image/.store in=\titlepage@image@bg,
+    background/.store in=\qi@titlepagebackground,
+    foreground/.store in=\qi@titlepageforeground,
+    command/.store in=\qi@titlepage
+}
+\pgfkeys{\titlepagepath,
+    tbi/.list ={
+            {bw(0.5\paperwidth,0.25\paperheight,0.75,white,primary)},
+            {color(0.5\paperwidth,0.25\paperheight,0.75,white,primary)}},
+    tbthi/.list={
+            {bw(1,0.25,0.6,black,white)},
+            {color(1,0.25,0.6,black,white)}},
+    tbti/.list={
+            {bw(1,0.75,0.25,white,primary)},
+            {color(1,0.75,0.25,black,primary)}}
+}
+% \pgfkeys{\titlepagepath,
+%     kumarazetina/.code={\def\qi@titlepage{\KumarAzetina}},
+%     quail/.code={\def\qi@titlepage{\Quail}},
+%     hexagon/.code={\def\qi@titlepage{\Hexagon}},
+%     victorian/.code={\def\qi@titlepage{\Victorian}},
+%     martinhelso/.code={\def\qi@titlepage{\MartinHelso}}
+% }
+\pgfkeys{\titlepagepath,
+    kumarazetina/.style args={bg=#1,fg=#2}{
+            background=#1,
+            foreground=#2,
+            command=\KumarAzetina
+        },
+    quil/.style args={bg=#1,fg=#2}{
+            background=#1,
+            foreground=#2,
+            command=\Quail
+        },
+    hexagon/.style args={#1,#2,#3,#4}{
+            background=#1,
+            foreground=#2,
+            deco/color=#3,
+            deco/text=#4,
+            command=\Hexagon
+        },
+    martinhelso/.style args={title box=#1,background image=#2}{
+            titlebox/#1,
+            titlebox/titlehead/#1,
+            titlebox/title/#1,
+            background image=#2,
+            command=\MartinHelso
+        }
+}
+
+\ProcessPgfOptions{\titlepagepath}
+
+\newcommand{\KumarAzetina}{ %https://tex.stackexchange.com/questions/85870/creating-a-titlepage
+    \begin{titlepage}
+        \newgeometry{left=7.5cm} %defines the geometry for the titlepage
+        %\pagecolor{titlepagecolor}
+        \pagecolor{\qi@titlepagebackground}
+        \noindent
+        \color{\qi@titlepageforeground}
+        \makebox[0pt][l]{\rule{1.3\textwidth}{1pt}}
+        \par
+        \noindent
+        \textbf{\@titlehead} \textcolor{secondary}{\@subject}
+        \vfill
+        \noindent
+        {\Huge\@title}
+        \vskip\baselineskip
+        \noindent
+        {\Large\@author}
+        \vskip\baselineskip
+        \noindent
+        \@date
+    \end{titlepage}
+    \restoregeometry % restores the geometry
+    \pagecolor{\qi@pagebackground} % restore the page background color
+}
+\newcommand{\Quail}{%https://github.com/johannesbottcher/titlepageExamples/blob/master/quail.tex
+    \begin{titlepage}
+        \thispagestyle{empty}
+        \newgeometry{left=3cm,right=3cm} %defines the geometry for the titlepage
+        \pagecolor{\qi@titlepagebackground}
+        \color{\qi@titlepageforeground}
+        \begin{center}
+            \setlength{\parskip}{2ex}
+            \rule{\textwidth}{.4pt}\par
+            {\Huge\bfseries\@title\par}
+            \vskip\baselineskip
+            {\huge\@subtitle\par}
+            \rule{\textwidth}{.4pt}\par
+            \bigbreak
+            {\Large\@author\par}
+        \end{center}
+    \end{titlepage}
+    \restoregeometry % restores the geometry
+    \pagecolor{\qi@pagebackground} % restore the page background color
+}
+\newcommand{\Hexagon}{%https://www.overleaf.com/project/642bbc37a6e7500513b5ec38
+    \begin{titlepage}
+        \pagestyle{empty}
+        \begin{tikzpicture}[remember picture,overlay]
+            %%%%%%%%%%%%%%%%%%%% Background %%%%%%%%%%%%%%%%%%%%%%%%
+            %\fill[Dandelion] (current page.south west) rectangle (current page.north east);
+            \fill[\qi@titlepagebackground] (current page.south west) rectangle (current page.north east);
+            %%%%%%%%%%%%%%%%%%%% Background Polygon %%%%%%%%%%%%%%%%%%%%
+            \foreach \i in {2.5,...,22} {
+                    \node[rounded corners,\color@darken{\qi@titlepagebackground}{20},draw,regular polygon,regular polygon sides=6, minimum size=\i cm,ultra thick]
+                    at ($(current page.west)+(2.5,-5)$) {} ;
+                }
+            \foreach \i in {0.5,...,22} {
+                    \node[rounded corners,\color@darken{\qi@titlepagebackground}{20},draw,regular polygon,regular polygon sides=6, minimum size=\i cm,ultra thick]
+                    at ($(current page.north west)+(2.5,0)$) {} ;
+                }
+            \foreach \i in {0.5,...,22} {
+                    \node[rounded corners,\color@lighter{\qi@titlepagebackground}{10},draw,regular polygon,regular polygon sides=6, minimum size=\i cm,ultra thick]
+                    at ($(current page.north east)+(0,-9.5)$) {} ;
+                }
+            \foreach \i in {21,...,6} {
+                    \node[\color@lighter{\qi@titlepagebackground}{6},rounded corners,draw,regular polygon,regular polygon sides=6, minimum size=\i cm,ultra thick]
+                    at ($(current page.south east)+(-0.2,-0.45)$) {} ;
+                }
+            %%%%%%%%%%%%%%%%%%%% Title of the Report %%%%%%%%%%%%%%%%%%%% 
+            \node[left,text centered,\qi@titlepageforeground,minimum width=0.625*\paperwidth,minimum height=3cm,text width=0.625*\paperwidth,rounded corners]
+            at ($(current page.north east)+(0,-9.5)$) {
+                {\fontsize{25}{30}\selectfont\bfseries\@title}
+            };
+            %%%%%%%%%%%%%%%%%%%% Subtitle %%%%%%%%%%%%%%%%%%%% 
+            \node[left,text centered,\qi@titlepageforeground,minimum width=0.625*\paperwidth,minimum height=2cm,text width=0.625*\paperwidth,rounded corners]
+            at ($(current page.north east)+(0,-11)$) {
+                {\huge \textit{\@subtitle}}
+            };
+            %%%%%%%%%%%%%%%%%%%% Author Name %%%%%%%%%%%%%%%%%%%% 
+            \node[left,text centered,\qi@titlepageforeground,minimum width=0.625*\paperwidth,minimum height=2cm,text width=0.625*\pagewidth,rounded corners]
+            at ($(current page.north east)+(0,-13)$) {
+                {\Large \textsc{\@author}}
+            };
+            %%%%%%%%%%%%%%%%%%%% Year %%%%%%%%%%%%%%%%%%%% 
+            \node[rounded corners,fill=\titlepage@decocolor,text=\qi@titlepagebackground,regular polygon,regular polygon sides=6,minimum size=2.5 cm,inner sep=0,ultra thick]
+            at ($(current page.west)+(2.5,-5)$) {\LARGE\bfseries\titlepage@decotext};
+        \end{tikzpicture}
+    \end{titlepage}
+}
+\newcommand{\MartinHelso}{ % inspired by the \mnfrontpage from https://github.com/uio-latex/mnfrontpage, see also https://www.overleaf.com/latex/templates/matnat-compendium/xbfgbfgzpcxz
+    \pagecolor{\qi@titlepagebackground}
+    \begin{titlepage}
+        \pagestyle{empty}
+        \begin{tikzpicture}[remember picture,overlay]
+            \begin{scope}[on background layer]
+                %\pgfimage[height=297mm]{images/a4/color_210x297_1}
+                \node[inner sep=0pt,anchor=south west,opacity=1] at (current page.south west) {\pgfimage[height=\paperheight]{\titlepage@image@bg}};
+            \end{scope}
+            \begin{scope}
+                \node[anchor=south west, inner sep=0pt, rectangle,fill=\titlebox@titlehead@background,fill opacity=\titlebox@titlehead@opacity,
+                    minimum height=\titlebox@titlehead@height,minimum width=\paperwidth,
+                    text width=\titlebox@titlehead@width,text centered,text opacity=1,
+                    yshift=\titlebox@topoffset] (titlehead) at (current page.south west)
+                {\color{\titlebox@titlehead@foreground}\textbf{\@titlehead}\vskip1ex\textcolor{\color@lighter{\titlebox@titlehead@foreground}{25}}{\@subject}};
+                \node[anchor=north west,inner sep=0pt,rectangle,fill=white,fill opacity=\titlebox@title@opacity,minimum height=\titlebox@title@height,minimum width=\paperwidth]
+                at (titlehead.south west) {};
+                \node[anchor=north west,inner sep=0pt,rectangle,fill=\titlebox@title@background,fill opacity=\titlebox@title@opacity,
+                    minimum height=\titlebox@title@height,minimum width=\paperwidth,
+                    text width=\titlebox@title@width,align=left,text opacity=1]
+                at (titlehead.south west) {\color{\titlebox@title@foreground}\Huge\@title\vskip2ex\Large\@author};
+            \end{scope}
+        \end{tikzpicture}
+    \end{titlepage}
+    \pagecolor{\qi@pagebackground}
+}
+% ToDo:
+% 1. http://tug.ctan.org/info/latex-samples/TitlePages/titlepages.pdf
+%    - \titleGP
+%    - \titleJA
+%    - \titleWH
+%    - \titleTMB
+%    - \titleHGP
+%    - \titleAT

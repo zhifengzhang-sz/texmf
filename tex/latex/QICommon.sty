@@ -1,0 +1,160 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{QICommon}[2023/06/11 QI Common Package]
+\RequirePackage{pgfkeys}
+\RequirePackage{pgffor}
+\RequirePackage{pgfopts}
+\RequirePackage{tikz}
+
+\newif\if@book
+\newif\if@article
+\@bookfalse
+\@articlefalse
+
+\def\qicommonthemepath{/qi/common/theme settings}
+\pgfkeys{\qicommonthemepath/.is family}
+\pgfkeys{/handlers/.colorlet/.code=\pgfkeysalso{\pgfkeyscurrentpath/.code=\colorlet{#1}{##1}}}
+
+\newcommand*{\qiname}[1]{\textbf{\textcolor{complement}{#1}}}
+
+%============================================================================================
+% code list styling parameters
+%============================================================================================
+\pgfkeys{\qicommonthemepath/code/.is family}
+\pgfkeys{\qicommonthemepath/code,
+    background/color/.store in=\codeBGColor,
+    background/color/.default=secondary2,
+    background/opacity/.store in=\codeBGOpacity,
+    background/opacity/.default=.1,
+    comment/color/.store in=\codeCommentColor,
+    comment/color/.default=secondary,
+    keyword/color/.store in=\codeKeywordColor,
+    keyword/color/.default=complement,
+    number/color/.store in=\codeNumberColor,
+    number/color/.default=secondary2c,
+    string/color/.store in=\codeStringColor,
+    string/color/.default=secondary2,
+    basic/font/.store in=\codeBasicFont,
+    basic/font/.default=\sffamily\footnotesize,
+    breakatwhitespace/.store in=\codeBAWS,
+    breakatwhitespace/.default=false,
+    breakline/.store in=\codeBL,
+    breakline/.default=true,
+    captionpos/.store in=\codeCaptionPos,
+    captionpos/.default=b,
+    keepspaces/.store in=\codeKeepSpaces,
+    keepspaces/.default=true,
+    numbersep/.store in=\codeNumberSep,
+    numbersep/.default=2pt,
+    tabsize/.store in=\codeTabSize,
+    tabsize/.default=2,
+    default/.style={
+            background/color,
+            background/opacity,
+            comment/color,
+            keyword/color,
+            number/color,
+            string/color,
+            basic/font,
+            breakatwhitespace,
+            breakline,
+            captionpos,
+            keepspaces,
+            numbersep,
+            tabsize
+        },
+}
+\pgfkeys{\qicommonthemepath/code,default}
+%============================================================================================
+% caption styling
+%============================================================================================
+\pgfkeys{\qicommonthemepath/caption/.is family}
+\pgfkeys{\qicommonthemepath/caption,
+    font/.store in=\captionFont,
+    font/.default=\scriptsize,
+    color/.store in=\captionColor,
+    color/.default=complementc, % adjusted according to background/color
+    width/.store in=\captionWidth,
+    width/.default=.5\linewidth,
+    background/color/.store in=\captionBGColor,
+    background/color/.default=complement,
+    background/opacity/.store in=\captionBGOpacity,
+    background/opacity/.default=.75,
+    light/.style={
+            font,
+            color=black,
+            width,
+            background/color,
+            background/opacity
+        },
+    dark/.style={
+            font,
+            color=white,
+            width,
+            background/color,
+            background/opacity
+        }
+}
+%============================================================================================
+% theorem counters
+%============================================================================================
+%------------------------------------------------
+% Configuring the built-in theorem environment
+%------------------------------------------------
+% The \newtheorem command has two mutually exlusive optional arguments:
+% Using
+% \newtheorem{<name>}{<heading>}[<counter>]
+% will create an environment <name> for a theorem-like structure;
+% the counter for this structure will be subordinated to <counter>.
+% On the other hand, using
+% \newtheorem{<name>}[<counter>]{<heading>}
+% will create an environment <name> for a theorem-like structure;
+% the counter for this structure will share the previously
+% defined <counter> counter.
+\pgfkeys{\qicommonthemepath/doc/.is family}
+\pgfkeys{\qicommonthemepath/doc,
+    doctype/.is choice,
+    doctype/book/.code={
+            \@booktrue
+            \@articlefalse
+        },
+    doctype/article/.code={
+            \@bookfalse
+            \@articletrue
+        }
+}
+
+\ProcessPgfOptions{\qicommonthemepath/doc}
+
+\if@book
+    \newtheorem{theorem}{\theoremname}[chapter]
+    \newtheorem{proposition}{\propositionname}[chapter]
+    \newtheorem{definition}{\definitionname}[chapter]
+    \newtheorem{remark}{\remarkname}[chapter]
+    \newtheorem{note}{\notename}[chapter]
+    \newtheorem{code}{\codename}[chapter]
+    \newtheorem{qitable}{\tablename}[chapter]
+    \newtheorem{qilist}{\listname}[chapter]
+    \newtheorem{qifigure}{\figurename}[chapter]
+    \newtheorem{example}{\examplename}[chapter]
+\fi
+\if@article
+    \newtheorem{theorem}{Theorem}[section]
+    \newtheorem{proposition}{Proposition}[section]
+    \newtheorem{definition}{Definition}[section]
+    \newtheorem{remark}{Remark}[section]
+    \newtheorem{note}{Note}[section]
+    \newtheorem{code}{Code}[section]
+    \newtheorem{qitable}{Table}[section]
+    \newtheorem{qilist}{List}[section]
+    \newtheorem{qifigure}{Figure}[section]
+\fi
+\newtheorem{corollary}{Corollary}[theorem]
+\newtheorem{lemma}[theorem]{Lemma}
+
+%============================================================================================
+% api
+%============================================================================================
+\newcommand{\useCommonTheme}[2][figure]{
+    \pgfkeys{\qicommonthemepath/#1,#2}
+}
+\endinput

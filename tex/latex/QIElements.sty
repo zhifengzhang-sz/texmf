@@ -1,0 +1,363 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{QIElements}[2023/06/06 QI Elements Package]
+\RequirePackage{tikz}
+\usetikzlibrary{shapes.geometric,calc,backgrounds}
+\RequirePackage{pgfkeys}
+\RequirePackage{pgffor}
+\RequirePackage{pgfopts}
+
+% QIColor and QICommon need to be loaded first
+\def\qiblockthemepath{/qi/block/theme settings}
+\pgfkeys{\qiblockthemepath/.is family}
+%==============================================================================================================================================================
+% hyperref
+%==============================================================================================================================================================
+% hyperindex: This turns the page numbers in the index entries into clickable hyperlinks. It’s default value is true
+% linktocpage: This turns your page numbers into links instead of the text in the Table of Contents. It’s default value is false.
+% breaklinks: This informs LaTeX to break links into multiple lines.It’s default value is false.
+% colorlinks: This sets the color for the text in links and anchors. These colors will show up in the document’s printed version. It’s default value is false. 
+% linkcolor: This sets the color for normal internal links in the document. It’s default value is red.
+% anchorcolor: This sets the color for your document’s anchor text. It’s default value is black
+% citecolor: This sets the color for your document’s bibliographic citations. It’s default value is green.
+% filecolor: This sets the color for the links that open local files on your system. It’s default value is cyan.
+% urlcolor: This sets the color for your document’s linked URLs. It’s default value is magenta.
+% \pgfkeys{\qiblockthemepath/hyperref/.is family}
+% \pgfkeys{\qiblockthemepath/hyperref,
+
+% }
+\RequirePackage{hyperref}
+\hypersetup{
+    hyperindex=true,
+    linktocpage=true,
+    linktoc=all,
+    colorlinks=true,
+    linkcolor=primary,
+    anchorcolor=tertiary,
+    citecolor=complement,
+    filecolor=secondary,
+    urlcolor=tertiary
+}
+%==============================================================================================================================================================
+% tikz styling
+%==============================================================================================================================================================
+\pgfkeys{\qiblockthemepath/figure/.is family}
+\pgfkeys{\qiblockthemepath/figure,
+    background/color/.store in=\figureBGColor,
+    background/color/.default=secondary2,
+    background/opacity/.store in=\figureBGOpacity,
+    background/opacity/.default=0.1,
+    label/color/.store in=\figureLabelColor,
+    label/font/.store in=\figureLabelFont,
+    label/font/.default=\scriptsize,
+    area/background/.store in=\figureAreaBG,
+    area/background/.default=tertiary!50!white,
+    area/foreground/.store in=\figureAreaFG,
+    area/foreground/.default=tertiaryc,
+    draw/color/.store in=\figureDrawColor,
+    draw/color/.default=secondary2!75!white,
+    point/color/.store in=\figurePointColor,
+    point/color/.default=secondary!75!white,
+    line/color/.store in=\figureLineColor,
+    line/color/.default=complement!75!white,
+    light/.style={
+            background/color,
+            background/opacity,
+            label/color=black,
+            label/font,
+            area/background,
+            area/foreground=black,
+            draw/color,
+            point/color,
+            line/color
+        },
+    dark/.style={
+            background/color,
+            background/opacity,
+            label/color=white,
+            label/font,
+            area/background,
+            area/foreground,
+            draw/color,
+            point/color,
+            line/color
+        },
+}
+\def\savelastnode{\pgfextra\edef\tmpA{\tikzlastnode}\endpgfextra}
+\def\restorelastnode{\pgfextra\edef\tikzlastnode{\tmpA}\endpgfextra}
+\tikzstyle{qi@box}=[
+draw=secondary,
+rectangle,
+rounded corners,
+inner sep=10pt,
+inner ysep=10pt,
+text opacity=1,
+fill=secondary2,
+fill opacity=0.1
+]
+\tikzstyle{fancytitle}=[
+fill=secondary2,
+text=secondary2c,
+rounded corners,
+minimum width=.25\textwidth,
+inner ysep=4pt,
+inner xsep=4pt
+]
+\tikzstyle{figure@title}=[
+append after command={
+        \savelastnode%
+        node[fancytitle,right=0pt,anchor=north west] at
+        (\tikzlastnode.north west) {#1}\restorelastnode}%
+]%
+\tikzstyle{figureBackground}=[
+fill=\figureBGColor,
+fill opacity=\figureBGOpacity
+]
+\tikzstyle{Label}=[
+color=\figureLabelColor,
+font=\figureLabelFont
+]
+\tikzstyle{Area}=[
+draw=none,
+fill=\figureAreaBG
+]
+\tikzstyle{AreaLabel}=[
+font=\scriptsize,
+color=\figureAreaFG
+]
+\tikzstyle{figure@bg}=[
+background rectangle/.style={figureBackground},
+show background rectangle
+]
+%===================================================================
+% tkz-euclide styling
+%===================================================================
+\RequirePackage{tkz-euclide}
+\tikzset{new/.style={color=\figureLineColor,ultra thin}}
+\tikzset{step 1/.style={color=secondary,ultra thin}}
+\tikzset{step 2/.style={color=tertiary,ultra thin}}
+\tkzSetUpPoint[size=2,color=\figurePointColor]
+\tkzSetUpLine[ultra thin,color=\figurePointColor]
+\tkzSetUpCompass[color=\picturecomplement,ultra thin,/tkzcompass/delta=10]
+%===================================================================
+% table styling
+%===================================================================
+%\RequirePackage{booktabs}
+%\RequirePackage{siunitx}
+\usetikzlibrary{matrix}
+\pgfkeys{\qiblockthemepath/table/.is family}
+\pgfkeys{\qiblockthemepath/table,
+    background/color/.store in=\tableBGColor,
+    background/color/.default=tertiary!50!white,
+    background/opacity/.store in=\tableBGOpacity,
+    background/opacity/.default=.1,
+    firstRow/color/.store in=\tableFirstRowColor,
+    firstRow/color/.default=tertiary,
+    row/color1/.store in=\tableRowColorOne,
+    row/color1/.default=tertiary,
+    row/color2/.store in=\tableRowColorTwo,
+    row/color2/.default=tertiary!75!white,
+    firstColumn/color/.store in=\tableFirstColumnColor,
+    firstColumn/color/.default=tertiary!75!white,
+    draw/color/.store in=\tableDrawColor,
+    draw/color/.default=secondary2!50!white,
+    light/.style={
+            background/color,
+            background/opacity,
+            firstRow/color,
+            row/color1,
+            row/color2,
+            firstColumn/color,
+            draw/color
+        },
+    dark/.style={
+            background/color,
+            background/opacity,
+            firstRow/color,
+            row/color1,
+            row/color2,
+            firstColumn/color,
+            draw/color
+        },
+}
+\tikzset{
+    table/.style args={text width=#1,col 1 width=#2}{
+            matrix of nodes,
+            row sep=-\pgflinewidth,
+            column sep=-\pgflinewidth,
+            nodes={
+                    rectangle,
+                    draw=\tableDrawColor,
+                    fill=\tableRowColorTwo, % for odd
+                    fill opacity=.1, % for odd
+                    text opacity=1,
+                    align=center
+                },
+            minimum height=1.5em,
+            text depth=0.5ex,
+            text height=2ex,
+            text width=#1,
+            nodes in empty cells,
+            %%
+            every even row/.style={
+                    nodes={fill=\tableRowColorOne,fill opacity=0.2,text opacity=1}
+                },
+            % every odd row/.style={
+            %         nodes={fill=\tableRowColorTwo,fill opacity=0.1,text opacity=1}
+            %     },
+            column 1/.style={
+                    nodes={text width=#2,font=\bfseries}
+                },
+            row 1/.style={
+                    nodes={
+                            fill=\tableFirstRowColor,
+                            fill opacity=0.5,
+                            text opacity=1,
+                            font=\bfseries
+                        }},
+        }
+}
+\tikzset{
+    table xform/.style={transform shape, #1, every matrix/.style={cells={#1}}}
+}
+\tikzstyle{table@bg}=[
+background rectangle/.style={
+        fill=\tableBGColor,
+        fill opacity=\tableBGOpacity},
+show background rectangle
+]
+
+\pgfkeys{\qiblockthemepath,
+    light/.code={
+            \RequirePackage[light]{QIPage}
+            \useCommonTheme[caption]{light}
+            \useBlockTheme{light}
+            \useBlockTheme[table]{light}
+            \RequirePackage{wrapfig2}
+            \RequirePackage[light]{QITColorBox}
+        },
+    dark/.code={
+            \RequirePackage[dark]{QIPage}
+            \useCommonTheme[caption]{dark}
+            \useBlockTheme{dark}
+            \useBlockTheme[table]{dark}
+            \RequirePackage{wrapfig2}
+            \RequirePackage[dark]{QITColorBox}
+        }
+}
+%=====================================================================================
+% api
+%=====================================================================================
+\newcommand{\useBlockTheme}[2][figure]{
+    \pgfkeys{\qiblockthemepath/#1,#2}
+}
+
+\ProcessPgfOptions{\qiblockthemepath}
+
+%===================================================================
+% QI Theorem: a custom enviroment
+%===================================================================
+\RequirePackage{environ}
+\RequirePackage{xparse}
+\RequirePackage{aliascnt}
+\newaliascnt{block@Theorem}{theorem}
+\newaliascnt{block@Corollary}{corollary}
+\newaliascnt{block@Lemma}{theorem}
+\newaliascnt{block@Proposition}{proposition}
+\newaliascnt{block@Definition}{definition}
+\newaliascnt{block@Remark}{remark}
+\newaliascnt{block@Note}{note}
+\newaliascnt{block@List}{qilist}
+\newaliascnt{block@Table}{qitable}
+\newaliascnt{block@Figure}{qifigure}
+\newaliascnt{block@Example}{example}
+\def\TheoremName{\theoremname}
+\def\CorollaryName{\corollaryname}
+\def\LemmaName{\lemmaname}
+\def\PropositionName{\propositionname}
+\def\DefinitionName{\definitionname}
+\def\RemarkName{\remarkname}
+\def\NoteName{\notename}
+\def\ListName{\listname}
+\def\FigureName{\figurename}
+\def\TableName{\tablename}
+\def\ExampleName{\examplename}
+\NewEnviron{qitheorem}[2][Theorem]{
+    \stepcounter{block@#1}
+    \begin{tikzpicture}
+        \IfNoValueTF{#2}{\def\theoremtitle{#1\ {\normalfont\thesection.\csname theblock@#1\endcsname.}}}
+        {\def\theoremtitle{#1\ {\normalfont\thesection.\csname theblock@#1\endcsname}: #2}}
+        \node [qi@box,figure@title=\theoremtitle] (box){%
+            \begin{minipage}{0.95\linewidth }
+                \vfill
+                \vskip 1.75em
+                \emph{\BODY}
+                \vfill
+            \end{minipage}
+        };
+    \end{tikzpicture}
+}
+%===================================================================
+% qi blocks: figure, table, etc.
+%===================================================================
+\newcommand{\block@caption}[2][Figure]{
+    \def\tmp{#2}%
+    \ifx\tmp\@empty%
+        {\bfseries\csname #1Name\endcsname\ \thesection.\csname theblock@#1\endcsname}
+    \else%
+        {\bfseries\csname #1Name\endcsname\ \thesection.\csname theblock@#1\endcsname}:\ #2
+    \fi%
+}
+\NewEnviron{qiblock}[3][Figure]{
+    \stepcounter{block@#1}
+    \IfNoValueTF{#2}{\centering\expandafter\csname qi@#1\endcsname[scale=1]{\BODY}}
+    {
+        \begin{center}
+            {\expandafter\csname qi@#1\endcsname[#2]{#3}{\BODY}}
+        \end{center}
+    }
+}
+\newcommand{\qi@Figure}[3][]{
+    \begin{tikzpicture}[figure@bg,#1]
+        \begin{scope}[local bounding box=figure]
+            #3
+        \end{scope}
+        \node[
+            anchor=north,
+            draw=none,
+            text width=\captionWidth,
+            font=\captionFont,
+            text=\captionColor,
+            fill=none] at (figure.south)
+        {\block@caption{#2}};
+    \end{tikzpicture}
+}
+\newcommand{\qi@Table}[3][]{
+    \begin{tikzpicture}[table@bg,#1]
+        \matrix[draw=none,fill=none,ampersand replacement=\&] (table) {#3};
+        \node[anchor=north,
+            draw=none,
+            text width=\captionWidth,
+            font=\captionFont,
+            text=\captionColor,
+            fill=none] at (table.south)
+        {\block@caption[Table]{#2}};
+    \end{tikzpicture}
+}
+
+%===================================================================
+% lettrine
+%===================================================================
+\RequirePackage{lettrine}
+\RequirePackage{GoudyIn}
+\renewcommand{\LettrineFontHook}{\color{\decocolor}\GoudyInfamily{}}
+\setcounter{DefaultLines}{3}
+\setlength{\DefaultNindent}{0pt}
+\setlength{\DefaultFindent}{1pt}
+%===================================================================
+% epigraph
+%===================================================================
+%\setkomafont{dictumauthor}{\normalfont}
+\setkomafont{dictum}{\color{gray}\scriptsize}
+%\renewcommand*\dictumwidth{0.5\linewidth}
+%\renewcommand*\raggeddictumtext{}
+\endinput

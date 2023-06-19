@@ -1,0 +1,254 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{QITColorBox}[2023/06/10 QI tcolorbox Package]
+\RequirePackage{tikz}
+\usetikzlibrary{shapes.geometric,calc,backgrounds}
+\RequirePackage{pgfkeys}
+\RequirePackage{pgffor}
+\RequirePackage{pgfopts}
+
+%============================================================================================
+% tcolorbox configuration
+%============================================================================================
+\RequirePackage{tcolorbox}
+\tcbuselibrary{theorems,raster,listings,skins,breakable}
+\pgfkeys{\qicommonthemepath/tcb/.is family}
+\pgfkeys{\qicommonthemepath/tcb,
+    background/.style args={name=#1,color=#2,opacity=#3}{
+            #1/background/color/.code={\expandafter\def\csname #1BGColor\endcsname{##1}},
+            #1/background/color/.default=#2,
+            #1/background/opacity/.code={\expandafter\def\csname #1BGOpacity\endcsname{##1}},
+            #1/background/opacity/.default=#3,
+            #1/background/default/.style={
+                    #1/background/color,
+                    #1/background/opacity,
+                }
+        },
+    title/.style args={name=#1,color=#2,background=#3,background opacity=#4}{
+            #1/title/color/.code={\expandafter\def\csname #1TitleColor\endcsname{##1}},
+            #1/title/color/.default=#2,
+            #1/title/background/color/.code={\expandafter\def\csname #1TitleBGColor\endcsname{##1}},
+            #1/title/background/color/.default=#3,
+            #1/title/background/opacity/.code={\expandafter\def\csname #1TitleBGOpacity\endcsname{##1}},
+            #1/title/background/opacity/.default=#4,
+            #1/title/default/.style={
+                    #1/title/color,
+                    #1/title/background/color,
+                    #1/title/background/opacity
+                }
+        }
+}
+\pgfkeys{\qicommonthemepath/tcb,
+    background/.list={
+            {name=List,color=tertiary,opacity=.1},
+            {name=Remark,color=secondary,opacity=.1},
+            {name=Note,color=secondary2,opacity=.1},
+            {name=Table,color=secondary2,opacity=.1},
+            {name=Code,color=tertiary,opacity=.1},
+            {name=Box,color=secondary2,opacity=.1},
+            {name=Figure,color=tertiary,opacity=.1}},
+    title/.list={
+            {name=List,color=secondaryc,background=secondary,background opacity=.75},
+            {name=Remark,color=tertiaryc,background=tertiary,background opacity=.75},
+            {name=Note,color=secondaryc,background=secondary,background opacity=.75},
+            {name=Table,color=tertiaryc,background=tertiary,background opacity=.75},
+            {name=Code,color=secondary2c,background=secondary2,background opacity=.75},
+            {name=Box,color=complementc,background=complement,background opacity=.75},
+            {name=Figure,color=secondaryc,background=secondary,background opacity=.75}}
+}
+\pgfkeys{\qicommonthemepath/tcb,
+    List/background/default,
+    List/title/default,
+    Remark/background/default,
+    Remark/title/default,
+    Note/background/default,
+    Note/title/default,
+    Table/background/default,
+    Table/title/default,
+    Code/background/default,
+    Code/title/default,
+    Box/background/default,
+    Box/title/default,
+    Figure/background/default,
+    Figure/title/default
+}
+\pgfkeys{\qicommonthemepath/code,default}
+\tcbset{
+    basic/.style={
+            enhanced,
+            breakable=true,
+            frame engine=empty,
+            width=\linewidth,
+            sharpish corners,
+            opacitytext=1,
+            title filled=true,
+            listing engine=listings,
+            boxsep=3pt,
+            left=5pt,right=5pt,top=5pt,bottom=5pt
+        },
+    numbercolor/.colorlet=tcb@numbercolor,
+    language/.style={
+            listing options={
+                    language=#1,
+                    numbers=left,
+                    numberstyle=\tiny\color{tcb@numbercolor},
+                    numbers=left,
+                    numbersep=\codeNumberSep,
+                    columns=fullflexible,
+                    commentstyle=\color{\codeCommentColor},
+                    keywordstyle=\color{\codeKeywordColor},
+                    stringstyle=\color{\codeStringColor},
+                    basicstyle=\codeBasicFont,
+                    breakatwhitespace=\codeBAWS,
+                    breaklines=\codeBL,
+                    captionpos=\codeCaptionPos,
+                    keepspaces=\codeKeepSpaces,
+                    showspaces=false,
+                    showstringspaces=false,
+                    showtabs=false,
+                    tabsize=\codeTabSize
+                }
+        },
+    fancycaption/.style={
+            before skip=2mm,
+            after skip=2mm,
+            boxrule=0.2mm,
+            boxed title style={
+                    frame code={
+                            \path[fill=tcbcolback!80!black,opacity=.75]
+                            ([yshift=-1mm,xshift=-1mm]frame.north west)
+                            arc[start angle=0,end angle=180,radius=1mm]
+                            ([yshift=-1mm,xshift=1mm]frame.north east)
+                            arc[start angle=180,end angle=0,radius=1mm];
+                            \shade[
+                                left color=tcbcolback,
+                                right color=tcbcolback,
+                                middle color=tcbcolback!80!white,
+                                fill opacity=.75
+                                ]
+                            %\fill[tcbcolback]
+                            ([xshift=-2mm]frame.north west) -- ([xshift=2mm]frame.north east)
+                            [rounded corners=1mm]-- ([xshift=1mm,yshift=-1mm]frame.north east)
+                            -- (frame.south east) -- (frame.south west)
+                            -- ([xshift=-1mm,yshift=-1mm]frame.north west)
+                            [sharp corners]-- cycle;
+                        },
+                    interior engine=empty,
+                },
+            attach boxed title to top left={xshift=1cm,yshift*=1mm-\tcboxedtitleheight},
+            varwidth boxed title*=-3cm,
+        },
+    jigsawcaption/.style={
+            skin=enhanced jigsaw,
+            attach boxed title to top left={
+                    xshift=-3mm,
+                    yshift=-\tcboxedtitleheight/2},
+            varwidth boxed title=0.7\linewidth,
+            top=2ex,
+            boxed title style={
+                sharp corners,
+                boxrule=0pt},
+            underlay boxed title={
+                    \fill[#1] (title.south west) -- (title.south-|frame.west)--++(0,-.5*\tcboxedtitleheight)--cycle;
+                    \fill[#1] (title.north east) --++(-.5*\tcboxedtitleheight,0)--++(0,.5*\tcboxedtitleheight)--cycle;}
+        },
+    light/.style={
+            coltext=black,
+            numbercolor=black!75!white,
+        },
+    dark/.style={
+            coltext=white,
+            numbercolor=white!75!black,
+        },
+    listing options={
+            numbers=left,
+            numberstyle=\tiny\color{tcb@numbercolor},
+            columns=fullflexible,
+        },
+    styleinstaller/.style={
+            #1/.style={
+                    colback=\csname #1BGColor\endcsname,
+                    opacityback=\csname #1BGOpacity\endcsname,
+                    colframe=\csname #1BGColor\endcsname,
+                    opacityframe=\csname #1BGOpacity\endcsname,
+                    colbacktitle=\csname #1TitleBGColor\endcsname,
+                    opacitybacktitle=\csname #1TitleBGOpacity\endcsname,
+                    coltitle=\csname #1TitleColor\endcsname,
+                },
+        }
+}
+\tcbset{
+    styleinstaller/.list={
+            List,
+            Remark,
+            Note,
+            Code,
+            Table,
+            Box,
+            Figure
+        }
+}
+
+%============================================================================================
+% qi box: speicifically for breakable code list,
+%         but aslo work for table, remark, note and list
+%============================================================================================
+\RequirePackage{aliascnt}
+\newaliascnt{box@Code}{code}
+\newaliascnt{box@Remark}{remark}
+\newaliascnt{box@Note}{note}
+\newaliascnt{box@List}{qilist}
+\newaliascnt{box@Table}{qitable}
+\newcounter{box@Box}[chapter]
+\newaliascnt{box@Figure}{qifigure}
+\newaliascnt{box@Example}{example}
+\def\CodeName{\codename}
+\newcommand{\box@caption}[2][Code]{
+    \def\tmp{#2}%
+    \ifx\tmp\@empty%
+        {\bfseries\csname #1Name\endcsname\ \thesection.\csname thebox@#1\endcsname}
+    \else%
+        {\bfseries\csname #1Name\endcsname\ \thesection.\csname thebox@#1\endcsname}:\ #2
+    \fi%
+}
+
+\RequirePackage{varwidth}
+\newcommand{\defbox}[2][Box]{
+    \newtcolorbox[use counter=box@#1,number format=\arabic]{#2}[2][]{
+        basic,#1,
+        title={\box@caption[#1]{##2}},
+        ##1}
+}
+\defbox{tcbbox}
+\defbox[Remark]{tcbremark}
+\defbox[Note]{tcbnote}
+\defbox[List]{tcblist}
+\defbox[Figure]{tcbfigure}
+%\defbox[Table]{tcbtable}
+\newtcolorbox[use counter=box@Table,number format=\arabic]{tcbtable}[3][]{
+    basic,Table,
+    title={\box@caption[Table]{#3}},
+    listing only,
+    before upper*=\begin{tabular}{#2},
+    after upper*=\end{tabular},
+    #1
+}
+\newtcblisting[use counter=box@Code,number format=\arabic]{tcbcode}[2][]{
+    basic,Code,
+    title={\box@caption[Code]{#2}},
+    listing only,
+    #1
+}
+\newtcblisting[use counter=box@Code,number format=\arabic]{tcbexample}[2][]{
+    basic,Example,
+    title={\box@caption[Example]{#2}},
+    #1
+}
+%============================================================================================
+% api
+%============================================================================================
+\newcommand{\useTCBTheme}[2][code]{
+    \pgfkeys{\qicommonthemepath/tcb/#1,#2}
+}
+
+\ProcessPgfOptions{/tcb}
+\endinput

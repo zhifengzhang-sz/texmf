@@ -1,0 +1,63 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{QIGeometry}[2023/06/05 QI Geometry Package]
+\RequirePackage{pgfkeys}
+\RequirePackage{pgffor}
+\RequirePackage{pgfopts}
+
+\def\qigeometrypath{/qi/common/geometry}
+\pgfkeys{\qigeometrypath/.is family}
+\pgfkeys{\qigeometrypath,
+    paper/.default=a4paper,
+    paper/.store in=\qi@paper,
+    textwidth/.store in=\qi@textwidth,
+    textheight/.store in=\qi@textheight,
+    left/.store in=\qi@geom@left,
+    right/.store in=\qi@geom@right,
+    top/.store in=\qi@geom@top,
+    bottom/.store in=\qi@geom@bottom,
+    foot/.store in=\qi@geom@foot,
+    head/.store in=\qi@geom@head,
+    a4paper/.style={
+            paper=a4paper,
+            left=1.5cm,
+            right=1.5cm,
+            top=0.6cm,
+            bottom=.5cm,
+            foot=1.2cm,
+            head=1.2cm
+        },
+    margin/.code={
+            left=#1,
+            right=#1,
+            top=#1,
+            bottom=#1
+        }
+}
+\ProcessPgfOptions{\qigeometrypath}
+\RequirePackage [
+    paper=\qi@paper,
+    left=\qi@geom@left,
+    right=\qi@geom@right,
+    top=\qi@geom@top,
+    bottom=\qi@geom@bottom,
+    head=\qi@geom@head,
+    foot=\qi@geom@foot,
+    includehead,
+    includefoot
+]{geometry}
+%==============================================================
+% api
+%==============================================================
+\newcommand{\useGeometry}[1]{
+    \pgfkeys{\qigeometrypath,#1}
+    \geometry{
+        paper=\qi@paper,
+        left=\qi@geom@left,
+        right=\qi@geom@right,
+        top=\qi@geom@top,
+        bottom=\qi@geom@bottom,
+        head=\qi@geom@head,
+        foot=\qi@geom@foot
+    }
+}
+\endinput

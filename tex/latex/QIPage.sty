@@ -1,0 +1,243 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{QIPage}[2023/04/08 QI Page Package]
+\RequirePackage{pgfkeys}
+\RequirePackage{pgffor}
+\RequirePackage{pgfopts}
+
+\newif\if@victorian
+\@victorianfalse
+
+\newif\if@Lenny
+\@Lennyfalse
+
+\def\colorpath{/qi/common/theme settings/page/color}
+\pgfkeys{\colorpath/.is family}
+\pgfkeys{\colorpath,
+    %------page color--------------------%
+    background/.code={
+            \pagecolor{#1}
+            \def\qi@pagebackground{#1}
+            \colorlet{pagebackground}{#1}},
+    background/.default=white,
+    foreground/.code={
+            \color{#1}
+            \def\qi@pageforeground{#1}
+            \colorlet{pageforeground}{#1}},
+    foreground/.default=black,
+    deco/.store in=\decocolor,
+    deco/.default=white!50!secondary2,
+    chaptertitle/.store in=\chaptertitlecolor,
+    chaptertitle/.default=primary,
+    disposition/.code={\addtokomafont{disposition}{\color{#1}}},
+    disposition/.default=primary,
+    light/.style={
+            \colorpath/background=white,
+            \colorpath/foreground=black},
+    dark/.style={
+            \colorpath/background=black,
+            \colorpath/foreground=white}
+}
+\pgfkeys{/qi/common/theme settings/page/.is family}
+\pgfkeys{/qi/common/theme settings/page,
+    %------page fonts-------%
+    font/chaptertitle/.store  in=\chaptertitlefont,
+    font/chaptertitle/.default=\Large\sffamily\bfseries,
+    font/chapternumber/.code 2 args={\newkomafont{chapternumber}{\fontsize{#1}{#2}\usefont{OT1}{pzc}{m}{n}}\selectfont}
+}
+\pgfkeys{/qi/common/theme settings/page,
+    %-------background image-------------%
+    background image/.store in=\image@bg
+}
+\pgfkeys{/qi/common/theme settings/page,
+    %-------header, footer---------------%
+    headfoot/headfootpkg/.is choice,
+    headfoot/headfootpkg/scrlayer/.code={
+            \RequirePackage[headsepline,footsepline]{scrlayer-scrpage}
+        },
+    headfoot/headfootpkg/.default=scrlayer,
+    headfoot/color/.code={
+        \addtokomafont{pageheadfoot}{\color{#1}}
+        \addtokomafont{pagenumber}{\color{#1}}},
+    headfoot/color/.default=secondary2
+}
+\pgfkeys{/qi/common/theme settings/page,
+    %-------chapter tiltle format--------%
+    titleformat/titlepkg/.is choice,
+    titleformat/titlepkg/fncychap/.code args={#1,(#2,#3)}{
+            \RequirePackage[#1]{fncychap}
+            \ChNumVar{\fontsize{#2}{#3}\usefont{OT1}{pzc}{m}{n}\selectfont\color{\chaptertitlecolor}}
+            \ChTitleVar{\raggedleft\chaptertitlefont\color{\chaptertitlecolor}}
+        },
+    titleformat/titlepkg/lenny/.code={\@Lennytrue},
+    titleformat/titlepkg/victorian/.code={\@victoriantrue},
+    titleformat/titlepkg/.default={fncychap={Lenny,(76,80)}}
+}
+\pgfkeys{/qi/common/theme settings/page,
+    lenny/.style={
+            color/light,
+            headfoot/headfootpkg,
+            headfoot/color=complement,
+            color/chaptertitle,
+            color/deco,
+            font/chaptertitle,
+            titleformat/titlepkg=lenny,
+            color/disposition},
+    victorian/.style={
+            color/light,
+            headfoot/headfootpkg,
+            headfoot/color=complement,
+            color/chaptertitle,
+            color/deco,
+            font/chaptertitle,
+            titleformat/titlepkg=victorian,
+            color/disposition},
+    light/.style={
+            color/light,
+            headfoot/headfootpkg,
+            headfoot/color=complement,
+            color/chaptertitle,
+            font/chaptertitle,
+            titleformat/titlepkg=lenny,
+            color/disposition,
+            color/deco},
+    dark/.style={
+            color/dark,
+            headfoot/headfootpkg,
+            headfoot/color,
+            color/chaptertitle,
+            font/chaptertitle,
+            titleformat/titlepkg=lenny,
+            color/disposition,
+            color/deco},
+    dark4565/.style={
+            color/dark,
+            headfoot/headfootpkg,
+            headfoot/color=tertiary,
+            color/chaptertitle,
+            font/chaptertitle,
+            titleformat/titlepkg,
+            color/disposition,
+            color/deco}
+}
+
+\ProcessPgfOptions{/qi/common/theme settings/page}
+
+%========================================================================================================================%
+% the victorian titlepkg
+%========================================================================================================================%
+% ToDo: this needs more work
+\if@victorian
+    \RequirePackage{tikz}
+    \RequirePackage{pgfornament}
+    \RequirePackage{eso-pic}
+    \RequirePackage{froufrou}
+    \RequirePackage{wallpaper}
+    \usetikzlibrary{chains,scopes}
+    \KOMAoptions{chapterprefix}
+    \newfontfamily{\victorian@titlefont}{QTLinoscroll}
+    \setmainfont{QTGraphLite}
+    \def\image@bg{images/a4/N-00.png}
+    \def\image@corner{63}
+    %=============================================================================================
+    % titles
+    %=============================================================================================
+    \renewcommand*{\chapterlineswithprefixformat}[3]{%
+        \Ifstr{#1}{chapter}{
+            \begin{center}
+                \begin{tikzpicture}
+                    \node[minimum size=4pt,inner sep=0] (A) at (0,0) {\color{\chaptertitlecolor}\fontsize{29}{23}\victorian@titlefont #3};
+                    %\coordinate (B) at (8,0);
+                    {
+                    [node distance=2pt,inner sep=0,color=\decocolor]
+                    \node[below=1ex of A] (B) {\pgfornament[width=1.25cm]{70}};
+                    \node[right=of B]  {\pgfornament[width=1.25cm]{70}};
+                    \node [left=of B] {\pgfornament[width=1.25cm]{70}};
+                    %\node [on chain] {\pgfornament[width=1cm]{70}};
+                    }
+                \end{tikzpicture}
+            \end{center}
+        }{}
+    }
+
+    \renewcommand{\chapterformat}{}
+    \renewcommand{\sectionformat}{}
+
+    \newcommand{\chapterend}{
+        {\color{\decocolor}\froufrou[fleuron]}
+    }
+    \newcommand{\introend}{{
+                \color{\decocolor}\froufrou[
+                    \pgfornament[height=0.1cm]{87}
+                    \pgfornament[height=0.1cm]{87}
+                    \pgfornament[height=0.1cm]{87}]
+            }}
+    %=============================================================================================
+    % title page and page decorations
+    %=============================================================================================
+    \newcommand\AtPageUpperRight[1]{\AtPageUpperLeft{%
+            \put(\LenToUnit{\paperwidth},\LenToUnit{0\paperheight}){#1}%
+        }}%
+    \newcommand\AtPageLowerRight[1]{\AtPageLowerLeft{%
+            \put(\LenToUnit{\paperwidth},\LenToUnit{0\paperheight}){#1}%
+        }}%
+    \AddToShipoutPicture{%
+        \begingroup
+        \def\@mydima{2}%
+        \def\@mydimb{17}%
+        \def\@mydimc{30}%
+        \AtPageUpperLeft{\put(\@mydima,-\@mydimb){\pgfornament[color=\decocolor,width=1cm]{\image@corner}}}
+        \AtPageUpperRight{\put(-\@mydimc,-\@mydimb){\pgfornament[color=\decocolor,width=1cm,symmetry=v]{\image@corner}}}
+        \AtPageLowerLeft{\put(\@mydima,\@mydimb){\pgfornament[color=\decocolor,width=1cm,symmetry=h]{\image@corner}}}
+        \AtPageLowerRight{\put(-\@mydimc,\@mydimb){\pgfornament[color=\decocolor,width=1cm,symmetry=c]{\image@corner}}}
+        \endgroup
+    }
+    \TileWallPaper{1cm}{1cm}{\image@bg}% 
+\fi
+
+%========================================================================================================================%
+% the lenny titlepkg: koma emulation of fncychap's lenny
+%========================================================================================================================%
+% ToDo: this needs more work
+\if@Lenny
+    \newlength{\ChapterRuleWidth}
+    \newcommand*{\QIChRuleWidth}[1]{\setlength{\ChapterRuleWidth}{\dimexpr #1}}%
+    \newcommand*{\ChapterNameCase}[1]{#1}
+    \newcommand*{\ChapterTitleCase}[1]{#1}
+    \QIChRuleWidth{1pt}
+    \KOMAoptions{chapterprefix}% Es ist ein Präfix-Stil
+    \newkomafont{chapternumber}{\fontsize{60}{62}\usefont{OT1}{pzc}{m}{n}\selectfont}
+    \RedeclareSectionCommand[%
+        beforeskip=-61pt,% Abstand über der Präfixzeile bzw. der Linie
+        innerskip=15pt,% Abstand zwischen Präfixzeile und Text
+        afterskip=40pt,% Abstand unter dem Text
+        font=\normalfont\rmfamily\Huge,% Schrift des Namens
+        prefixfont=\fontsize{14}{16}\usefont{OT1}{phv}{m}{n}\selectfont,% Schrift der Präfixzeile
+    ]{chapter}
+    \usepackage{picture}
+    \renewcommand*{\chapterformat}{%
+        \hskip -1pt
+        \mbox{%
+            \setlength{\fboxsep}{2.5pt}\colorbox{pagebackground}{%
+                \color{pageforeground}\strut\ChapterNameCase{\chapappifchapterprefix{\enskip}}}%
+            {\usekomafont{chapternumber}{%
+                    \colorbox{pagebackground}{\strut\thechapter\IfUsePrefixLine{}{\enskip}}}}%
+        }%
+    }
+    \renewcommand*{\chapterlineswithprefixformat}[3]{% Ebene, Nummer, Text
+        \IfArgIsEmpty{#2}{}{%
+            % Die Prefix-Zeile aus Argument 2 wird nur gesetzt, wenn sie vorhanden
+            % ist.
+            \begin{picture}(0,0)
+                \setlength{\linethickness}{\ChapterRuleWidth}%
+                \usekomafont{chapternumber}{%
+                    \put(.5\ChapterRuleWidth,0){%
+                        \framebox(\dimexpr\linewidth-\ChapterRuleWidth,.9\ht\strutbox){}}}%
+            \end{picture}%
+            #2%
+        }%
+        \hfill
+        \ChapterTitleCase{#3}%
+    }
+\fi
+
+\endinput

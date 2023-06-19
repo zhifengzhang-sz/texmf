@@ -1,0 +1,253 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{QIFont}[2023/06/17 QI Font Package]
+\RequirePackage{pgfkeys}
+\RequirePackage{pgffor}
+\RequirePackage{pgfopts}
+
+%============================================================================================
+% font defintions
+%============================================================================================
+\pgfkeys{/qi/common/font/.is family}
+%-----------------------------------------------------------------------
+% math
+%-----------------------------------------------------------------------
+\pgfkeys{/qi/common/font/math/.is family}
+\pgfkeys{/qi/common/font/math,
+    mainfont/.is choice,
+    mainfont/palatino/.code={
+            \RequirePackage{newtxtext,newtxmath}
+            \def\qi@math{newtx}},
+    mainfont/fourier/.code={\RequirePackage{fourier}}
+}
+%-----------------------------------------------------------------------
+% english
+%-----------------------------------------------------------------------
+\pgfkeys{/qi/common/font/en/.is family}
+\pgfkeys{/qi/common/font/en,
+    mainfont/.is choice,
+    mainfont/nofont/.code={\def\qi@englishfont{nofont}},
+}
+%-----------------------------------------------------------------------
+% chinese
+%-----------------------------------------------------------------------
+\pgfkeys{/qi/common/font/cn/.is family}
+\pgfkeys{/qi/common/font/cn,
+    mainfont/.is choice,
+    mainfont/founder/.code={\def\qi@chinesefont{founder}},
+    mainfont/nofont/.code={\def\qi@chinesefont{nofont}},
+    mainfont/ctexfont/.code={\def\qi@chinesefont{ctexfont}}
+}
+%============================================================================================
+% font loading
+%============================================================================================
+\RequirePackage{etoolbox}
+\def\qi@font@loadpkg{
+    \ifdefstring{\qi@lang}{cn}{
+        \ifdefstring{\qi@chinesefont}{founder}{
+            \RequirePackage[UTF8, scheme=plain, fontset=none]{ctex}
+            \setCJKmainfont[BoldFont={FZHei-B01},ItalicFont={FZKai-Z03}]{FZShuSong-Z01}
+            \setCJKsansfont[BoldFont={FZHei-B01}]{FZKai-Z03}
+            \setCJKmonofont[BoldFont={FZHei-B01}]{FZFangSong-Z02}
+            \setCJKfamilyfont{zhsong}{FZShuSong-Z01}
+            \setCJKfamilyfont{zhhei}{FZHei-B01}
+            \setCJKfamilyfont{zhkai}[BoldFont={FZHei-B01}]{FZKai-Z03}
+            \setCJKfamilyfont{zhfs}[BoldFont={FZHei-B01}]{FZFangSong-Z02}
+            \newcommand*{\songti}{\CJKfamily{zhsong}}
+            \newcommand*{\heiti}{\CJKfamily{zhhei}}
+            \newcommand*{\kaishu}{\CJKfamily{zhkai}}
+            \newcommand*{\fangsong}{\CJKfamily{zhfs}}}{\relax}
+
+        \ifdefstring{\qi@chinesefont}{nofont}{
+            \RequirePackage[UTF8,scheme=plain,fontset=none]{ctex}
+            \xeCJKsetup{AutoFakeBold=true}
+        }{\relax}
+
+        \ifdefstring{\qi@chinesefont}{ctexfont}{
+            \RequirePackage[UTF8,scheme=plain]{ctex}
+            \xeCJKsetup{AutoFakeBold=true}
+        }{\relax}
+
+        \AfterEndPreamble{
+            \setlength\parindent{2\ccwd}}
+
+        \ifcsname heiti\endcsname
+            \newcommand{\cbfseries}{\heiti}
+        \else
+            \newcommand{\cbfseries}{\bfseries}
+        \fi
+
+        \ifcsname kaishu\endcsname
+            \newcommand{\citshape}{\kaishu}
+        \else
+            \newcommand{\citshape}{\itshape}
+        \fi
+        \ifcsname kaishu\endcsname
+            \newcommand{\cnormal}{\kaishu}
+        \else
+            \newcommand{\cnormal}{\normalfont}
+        \fi
+
+        \ifcsname fangsong\endcsname
+            \newcommand{\cfs}{\fangsong}
+        \else
+            \newcommand{\cfs}{\normalfont}
+        \fi
+    }{\relax}
+}
+%============================================================================================
+% language related element names
+%============================================================================================
+\def\qi@lang@names{
+    \ifdefstring{\qi@lang}{cn}{
+        \renewcommand{\baselinestretch}{1.3}
+        \renewcommand{\contentsname}{目录}
+        \renewcommand{\figurename}{图}
+        \renewcommand{\tablename}{表}
+        \renewcommand{\partname}{\color{structurecolor}}
+        \renewcommand{\thepart}{第\zhnumber{\arabic{part}}部分}
+        \renewcommand{\listfigurename}{插图目录}
+        \renewcommand{\listtablename}{表格目录}
+        \renewcommand{\bibname}{参考文献}
+        \newcommand{\ebibname}{参考文献}
+        \renewcommand{\appendixname}{附录}
+        \renewcommand{\appendixtocname}{附录}
+        \renewcommand{\indexname}{索\hspace{2em}引}
+        \newcommand\figref[1]{\textbf{图}~\ref{##1}}
+        \newcommand\tabref[1]{\textbf{表}~\ref{##1}}
+        \newcommand{\authorname}{\citshape 作者：}
+        \newcommand{\institutename}{\citshape 组织：}
+        \newcommand{\datename}{\citshape 时间：}
+        \newcommand{\versionname}{\citshape 版本：}
+        \newcommand{\notename}{笔记}
+        \renewcommand*{\proofname}{证明}
+        \newcommand{\definitionname}{定义}
+        \newcommand{\theoremname}{定理}
+        \newcommand{\axiomname}{公理}
+        \newcommand{\postulatename}{公设}
+        \newcommand{\lemmaname}{引理}
+        \newcommand{\propositionname}{命题}
+        \newcommand{\corollaryname}{推论}
+        \newcommand{\examplename}{例题} %
+        \newcommand{\instancename}{示例} %
+        \newcommand{\problemname}{问题} % 问题
+        \newcommand{\exercisename}{练习} % 练习=习题
+        \newcommand{\remarkname}{注}
+        \newcommand{\assumptionname}{假设}
+        \newcommand{\conclusionname}{结论}
+        \newcommand{\solutionname}{解}
+        \newcommand{\propertyname}{性质}
+        \newcommand{\introductionname}{内容提要}
+        \newcommand\bioinfo[2]{\gdef\@bioinfo{{\citshape ##1}：##2}}
+        \newcommand{\updatename}{更新：}
+        \newcommand{\historyname}{版本更新历史}
+        \newcommand{\beforechap}{第}
+        \newcommand{\afterchap}{章}
+        \newcommand{\codename}{源代码}
+        \newcommand{\listname}{列表}
+    }{\relax}
+    \ifdefstring{\qi@lang}{en}{
+        \setlength\parindent{2em}
+        \newcommand\figref[1]{\textbf{Figure}~\ref{##1}}
+        \newcommand\tabref[1]{\textbf{Table}~\ref{##1}}
+        \renewcommand{\chaptername}{Chapter}
+        \renewcommand{\partname}{\color{structurecolor} Part}
+        \newcommand{\authorname}{\textbf{Author: }}
+        \newcommand{\institutename}{\textbf{Institute: }}
+        \newcommand{\datename}{\textbf{Date: }}
+        \newcommand{\versionname}{\textbf{Version: }}
+        \newcommand{\notename}{Note}
+        \newcommand{\proofname}{Proof}
+        \newcommand{\problemname}{Problem}
+        \newcommand{\definitionname}{Definition}
+        \newcommand{\theoremname}{Theorem}
+        \newcommand{\axiomname}{Axiom}
+        \newcommand{\postulatename}{Postulate}
+        \newcommand{\lemmaname}{Lemma}
+        \newcommand{\propositionname}{Proposition}
+        \newcommand{\corollaryname}{Corollary}
+        \newcommand{\examplename}{Example}
+        \newcommand{\exercisename}{Exercise}
+        \newcommand{\remarkname}{Remark}
+        \newcommand{\assumptionname}{Assumption}
+        \newcommand{\conclusionname}{Conclusion}
+        \newcommand{\solutionname}{Solution}
+        \newcommand{\propertyname}{Property}
+        \newcommand{\introductionname}{Introduction}
+        \renewcommand{\appendixname}{Appendix}
+        \newcommand{\ebibname}{Bibliography}
+        % \newcommand{\problemsetname}{Exercise}
+        \newcommand\bioinfo[2]{\gdef\@bioinfo{\textbf{##1}: ##2}}
+        \newcommand{\updatename}{Updates:}
+        \newcommand{\historyname}{Version History}
+        \newcommand{\codename}{Source Code}
+        \newcommand{\listname}{List}
+        %\renewcommand{\tablename}{Table}
+    }{\relax}
+}
+%============================================================================================
+% api
+%============================================================================================
+\newcommand{\useLanguage}[2][en]{
+    \useFont[#1]{#2}
+    \qi@lang@names
+}
+\newcommand{\useFont}[2][en]{
+    \pgfkeys{/qi/common/font/#1,mainfont=#2}
+    \qi@font@loadpkg
+}
+\newcommand{\useMathFont}[1]{
+    \pgfkeys{/qi/common/font/math,mainfont=#1}
+    \RequirePackage{anyfontsize}
+    \ifdefstring{\qi@math}{newtx}{
+        % fixing old font problem with koma book
+        % reference: https://www.tug.org/pipermail/tex-live/2016-July/038985.html
+        \DeclareOldFontCommand{\rm}{\normalfont\rmfamily}{\mathrm}
+        \DeclareOldFontCommand{\sf}{\normalfont\sffamily}{\mathsf}
+        \DeclareOldFontCommand{\tt}{\normalfont\ttfamily}{\mathtt}
+        \DeclareOldFontCommand{\bf}{\normalfont\bfseries}{\mathbf}
+        \DeclareOldFontCommand{\it}{\normalfont\itshape}{\mathit}
+        \DeclareOldFontCommand{\sl}{\normalfont\slshape}{\@nomath\sl}
+        \DeclareOldFontCommand{\sc}{\normalfont\scshape}{\@nomath\sc}
+        %
+        % the followings are from elegantbook
+        %
+        \let\oldencodingdefault\encodingdefault
+        \let\oldrmdefault\rmdefault
+        \let\oldsfdefault\sfdefault
+        \let\oldttdefault\ttdefault
+        \def\encodingdefault{T1}
+        \renewcommand{\rmdefault}{ntxtlf}
+        \renewcommand{\sfdefault}{qhv}
+        \renewcommand{\ttdefault}{ntxtt}
+        \RequirePackage{newtxmath}
+        \let\encodingdefault\oldencodingdefault
+        \let\rmdefault\oldrmdefault
+        \let\sfdefault\oldsfdefault
+        \let\ttdefault\oldttdefault
+        \let\Bbbk\relax
+        \RequirePackage{esint}
+        \DeclareSymbolFont{CMlargesymbols}{OMX}{cmex}{m}{n}
+        \let\sumop\relax\let\prodop\relax
+        \DeclareMathSymbol{\sumop}{\mathop}{CMlargesymbols}{"50}
+        \DeclareMathSymbol{\prodop}{\mathop}{CMlargesymbols}{"51}
+    }{\relax}
+}
+%============================================================================================
+% language
+%============================================================================================
+\pgfkeys{/qi/common/.is family}
+\pgfkeys{/qi/common,
+    lang/.code 2 args={
+        \def\qi@lang{#1}
+        \useLanguage[#1]{#2}},
+    mathfont/.code={\useMathFont{#1}},
+    en/.style={
+            lang={en}{nofont},
+        },
+    cn/.style={
+            lang={cn}{founder},
+        }
+}
+\ProcessPgfOptions{/qi/common}
+
+\endinput

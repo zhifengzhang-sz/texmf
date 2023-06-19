@@ -1,0 +1,110 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{QIColor}[2023/05/31 QI Color Package]
+\RequirePackage{pgfkeys}
+\RequirePackage{pgffor}
+\RequirePackage{pgfopts}
+%-------------------------------------------------------------------------------------------------------
+% color map
+% 1. Four-color model withe complementary color
+%    - model: primary, secondary, tertiary, complement
+%    - text color if using model as background: primaryc, secondaryc, tertiaryc, complementc
+% 2. each color can generate its own palette by using tint and shade function
+% 3. combining 1 and 2, we could have four mono palettes for the document. Usually, each element
+%    is related to a mono palette, and the theme package is designed to utilize such scheme to
+%    construct a good color harmonic for the document.
+% 4. api:
+%    - model: \qicolormodel{name}{primary}{secondary}{tertiary}{complement}{page_fg}{page_bg}
+%    - text: \qicolormodeltext{name}{primaryc}{secondaryc}{tertiaryc}{complementc}
+% 5. util:
+%    - \color@darken{color}{amount} amount:0-100
+%    - \color@lighten{color}{amount}
+%-------------------------------------------------------------------------------------------------------
+%\RequirePackage[usenames,dvipsnames]{xcolor}
+\RequirePackage{xcolor}
+%\input{\file@color.pgfk}
+\pgfkeys{/qi/common/color/.is family}
+\pgfkeys{/qi/common/color,
+    primary/.code 2 args={\definecolor[named]{primary}{#1}{#2}},
+    secondary/.code 2 args={\definecolor[named]{secondary}{#1}{#2}},
+    secondary2/.code 2 args={\definecolor[named]{secondary2}{#1}{#2}},
+    tertiary/.code 2 args={\definecolor[named]{tertiary}{#1}{#2}},
+    complement/.code 2 args={\definecolor[named]{complement}{#1}{#2}},
+    primaryc/.code 2 args={\definecolor[named]{primaryc}{#1}{#2}},
+    secondaryc/.code 2 args={\definecolor[named]{secondaryc}{#1}{#2}},
+    secondary2c/.code 2 args={\definecolor[named]{secondary2c}{#1}{#2}},
+    tertiaryc/.code 2 args={\definecolor[named]{tertiaryc}{#1}{#2}},
+    complementc/.code 2 args={\definecolor[named]{complementc}{#1}{#2}},
+    colormap/.style args={#1(#2,#3,#4,#5,#6)}{colormap/#1/.style = {
+                    primary={HTML}{#2},
+                    secondary={HTML}{#3},
+                    secondary2={HTML}{#4},
+                    tertiary={HTML}{#5},
+                    complement={HTML}{#6}
+                }},
+    colormapc/.style args={#1(#2,#3,#4,#5,#6)}{colormapc/#1/.style ={
+                    primaryc={HTML}{#2},
+                    secondaryc={HTML}{#3},
+                    secondary2c={HTML}{#4},
+                    tertiaryc={HTML}{#5},
+                    complementc={HTML}{#6}
+                }},
+    palette/.style={
+            colormap/#1,
+            colormapc/#1}
+}
+\pgfkeys{/qi/common/color, % installing colormaps
+    colormap/.list={
+            {587(d35002,ffa602,f9d692,c18e01,4f5819)},
+            {3841(A05E2B,E0992C,F1EEA6,EBDDD2,F7F5F6)},
+            {4405(274215,85BB4D,CAD8D8,EEA402,DD7236)},
+            {4502(BF8709,EAC57D,B9BBDE,807490,523857)},
+            {4507(6A3F36,C8A796,F4F3EE,F8E4BE,EEA988)},
+            {4508(6A7793,CFD1E0,F9F7FA,D0C9D0,B4A8AA)},
+            {4522(567A04,D4CF6D,D7A3B6,9783A9,54387F)},
+            {4529(945D87,EDD1EC,EECC70,D71232,82071B)},
+            {4530(D3B19E,D39CBD,995E7C,683142,312528)},
+            {4552(BB35AE,E99FF4,EDE7F8,F5BB2C,D2B4AA)},
+            {4555(3D5220,B7CB99,778FD2,2A3759,431D32)},
+            {4558(5A7A0A,83D350,FAB036,FDD48A,513C2F)},
+            {4561(338309,C9D46C,E48716,FAAB01,DFBCB2)},
+            {4565(677C77,445F3B,8EA076,E0EFEA,564734)},
+            {4566(180C0C,483948,B2AB2E,ED413E,EFB786)},
+            {4571(217074,37745B,8B9D77,E7EAEF,EDC5AB)},
+            {4572(AA1803,BD613C,F1BAA1,BCAF4D,6D8C00)},
+            {4573(1A2902,344C11,778D45,AEC09A,AEC670)},
+            {4574(583E26,A78B71,F7C815,EC9704,9C4A1A)}}
+}
+\pgfkeys{/qi/common/color,
+    colormapc/.list={
+            {587(f2f3f4,131516,131516,131516,f2f3f4)},
+            {3841(f2f3f4,131516,131516,131516,131516)},
+            {4405(f2f3f4,131516,131516,131516,f2f3f4)},
+            {4502(f2f3f4,131516,131516,f2f3f4,f2f3f4)},
+            {4507(f2f3f4,131516,131516,131516,131516)},
+            {4508(f2f3f4,131516,131516,131516,131516)},
+            {4522(f2f3f4,131516,131516,f2f3f4,f2f3f4)},
+            {4529(f2f3f4,131516,131516,f2f3f4,f2f3f4)},
+            {4530(131516,131516,f2f3f4,f2f3f4,f2f3f4)},
+            {4552(f2f3f4,131516,131516,131516,131516)},
+            {4555(f2f3f4,131516,131516,f2f3f4,f2f3f4)},
+            {4558(f2f3f4,131516,131516,131516,f2f3f4)},
+            {4561(f2f3f4,131516,131516,131516,131516)},
+            {4565(f2f3f4,f2f3f4,131516,131516,f2f3f4)},
+            {4566(f2f3f4,f2f3f4,131516,f2f3f4,131516)},
+            {4571(f2f3f4,f2f3f4,131516,131516,131516)},
+            {4572(f2f3f4,f2f3f4,131516,131516,f2f3f4)},
+            {4573(f2f3f4,f2f3f4,f2f3f4,131516,131516)},
+            {4574(f2f3f4,131516,131516,131516,f2f3f4)}}
+}
+\newcommand{\color@darken}[2]{black!#2!#1} % reduce color #1 by #2 amount replaced by black
+\newcommand{\color@lighter}[2]{white!#2!#1} % reduce color #1 by #2 amount replaced by white
+\newcommand{\qicolormodel}[6]{
+    \pgfkeys{/qi/common/color,colormap={#1(#2,#3,#4,#5,#6)}}
+    \pgfkeys{/qi/common/color,colormap/#1}
+}
+\newcommand{\qicolormodeltext}[6]{
+    \pgfkeys{/qi/common/color,colormapc={#1(#2,#3,#4,#5,#6)}}
+    \pgfkeys{/qi/common/color,colormapc/#1}
+}
+
+\ProcessPgfOptions{/qi/common/color}
