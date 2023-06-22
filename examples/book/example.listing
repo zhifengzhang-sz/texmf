@@ -1,0 +1,32 @@
+\def\pagecolorpath{/qi/common/theme settings/page/color}
+\pgfkeys{\pagecolorpath/.is family}
+\pgfkeys{\pagecolorpath,
+    %------page color---------------%
+    background/.code={
+            \pagecolor{#1}
+            \def\qi@pagebackground{#1}
+            \colorlet{pagebackground}{#1}},
+    foreground/.code={
+            \color{#1}
+            \def\qi@pageforeground{#1}
+            \colorlet{pageforeground}{#1}},
+    deco/.store in=\decocolor,
+    deco/.default=tertiary,
+    chaptertitle/.store in=\chaptertitlecolor,
+    chaptertitle/.default=primary,
+    disposition/.code={
+            \addtokomafont{disposition}{\color{#1}}},
+    disposition/.default=primary,
+    headfoot/.code={
+            \addtokomafont{pagehead}{\color{#1}}
+            \addtokomafont{pagefoot}{\color{#1}}
+            \addtokomafont{pagenumber}{\color{#1}}
+        },
+    headfoot/.default=secondary2,
+    light/.style={
+            \pagecolorpath/background=white,
+            \pagecolorpath/foreground=black},
+    dark/.style={
+            \pagecolorpath/background=black,
+            \pagecolorpath/foreground=white}
+}

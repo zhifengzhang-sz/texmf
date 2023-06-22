@@ -45,7 +45,8 @@
             {name=Table,color=secondary2,opacity=.1},
             {name=Code,color=tertiary,opacity=.1},
             {name=Box,color=secondary2,opacity=.1},
-            {name=Figure,color=tertiary,opacity=.1}},
+            {name=Figure,color=tertiary,opacity=.1},
+            {name=Example,color=secondary2,opacity=.1}},
     title/.list={
             {name=List,color=secondaryc,background=secondary,background opacity=.75},
             {name=Remark,color=tertiaryc,background=tertiary,background opacity=.75},
@@ -53,7 +54,8 @@
             {name=Table,color=tertiaryc,background=tertiary,background opacity=.75},
             {name=Code,color=secondary2c,background=secondary2,background opacity=.75},
             {name=Box,color=complementc,background=complement,background opacity=.75},
-            {name=Figure,color=secondaryc,background=secondary,background opacity=.75}}
+            {name=Figure,color=secondaryc,background=secondary,background opacity=.75},
+            {name=Example,color=tertiaryc,background=tertiary,background opacity=.75}}
 }
 \pgfkeys{\qicommonthemepath/tcb,
     List/background/default,
@@ -69,7 +71,9 @@
     Box/background/default,
     Box/title/default,
     Figure/background/default,
-    Figure/title/default
+    Figure/title/default,
+    Example/background/default,
+    Example/title/default
 }
 \pgfkeys{\qicommonthemepath/code,default}
 \tcbset{
@@ -83,12 +87,13 @@
             title filled=true,
             listing engine=listings,
             boxsep=3pt,
-            left=5pt,right=5pt,top=5pt,bottom=5pt
+            left=5pt,right=5pt,top=5pt,bottom=5pt,
+            noparskip
         },
     numbercolor/.colorlet=tcb@numbercolor,
+    lstset/.code={\lstset{#1}},
     language/.style={
             listing options={
-                    language=#1,
                     numbers=left,
                     numberstyle=\tiny\color{tcb@numbercolor},
                     numbers=left,
@@ -105,8 +110,10 @@
                     showspaces=false,
                     showstringspaces=false,
                     showtabs=false,
-                    tabsize=\codeTabSize
-                }
+                    tabsize=\codeTabSize,
+                    xleftmargin=1mm
+                },
+            lstset={language=#1},
         },
     fancycaption/.style={
             before skip=2mm,
@@ -124,7 +131,7 @@
                                 right color=tcbcolback,
                                 middle color=tcbcolback!80!white,
                                 fill opacity=.75
-                                ]
+                            ]
                             %\fill[tcbcolback]
                             ([xshift=-2mm]frame.north west) -- ([xshift=2mm]frame.north east)
                             [rounded corners=1mm]-- ([xshift=1mm,yshift=-1mm]frame.north east)
@@ -145,8 +152,8 @@
             varwidth boxed title=0.7\linewidth,
             top=2ex,
             boxed title style={
-                sharp corners,
-                boxrule=0pt},
+                    sharp corners,
+                    boxrule=0pt},
             underlay boxed title={
                     \fill[#1] (title.south west) -- (title.south-|frame.west)--++(0,-.5*\tcboxedtitleheight)--cycle;
                     \fill[#1] (title.north east) --++(-.5*\tcboxedtitleheight,0)--++(0,.5*\tcboxedtitleheight)--cycle;}
@@ -184,7 +191,8 @@
             Code,
             Table,
             Box,
-            Figure
+            Figure,
+            Example
         }
 }
 
@@ -202,6 +210,13 @@
 \newaliascnt{box@Figure}{qifigure}
 \newaliascnt{box@Example}{example}
 \def\CodeName{\codename}
+\def\ExampleName{\examplename}
+\def\RemarkName{\remarkname}
+\def\NoteName{\notename}
+\def\ListName{\listname}
+\def\TableName{\tablename}
+\def\BoxName{\boxname}
+\def\FigureName{\figurename}
 \newcommand{\box@caption}[2][Code]{
     \def\tmp{#2}%
     \ifx\tmp\@empty%
@@ -229,26 +244,33 @@
     title={\box@caption[Table]{#3}},
     listing only,
     before upper*=\begin{tabular}{#2},
-    after upper*=\end{tabular},
-    #1
-}
-\newtcblisting[use counter=box@Code,number format=\arabic]{tcbcode}[2][]{
+        after upper*=\end{tabular},
+    #1}
+\newtcblisting[use counter=box@Code,number format=\arabic]{tcbcode}[2][]{%
     basic,Code,
     title={\box@caption[Code]{#2}},
     listing only,
-    #1
-}
-\newtcblisting[use counter=box@Code,number format=\arabic]{tcbexample}[2][]{
+    #1}
+\newtcbinputlisting[use counter=box@Code]{\tcbcodefile}[3][]{%
+    listing file={#2},
+    basic,Code,
+    title={\box@caption[Code]{#3}},
+    #1}
+\newtcblisting[use counter=box@Example,number format=\arabic]{tcbexample}[2][]{%
     basic,Example,
     title={\box@caption[Example]{#2}},
-    #1
-}
+    #1}
+\newtcbinputlisting[use counter=boxExample]{\tcbexamplefile}[3][]{%
+    listing file={#2},
+    basic,
+    Example,
+    title={\box@caption[Example]{#2}},
+    #1}
 %============================================================================================
 % api
 %============================================================================================
 \newcommand{\useTCBTheme}[2][code]{
-    \pgfkeys{\qicommonthemepath/tcb/#1,#2}
-}
+    \pgfkeys{\qicommonthemepath/tcb/#1,#2}}
 
 \ProcessPgfOptions{/tcb}
 \endinput

@@ -360,4 +360,13 @@ show background rectangle
 \setkomafont{dictum}{\color{gray}\scriptsize}
 %\renewcommand*\dictumwidth{0.5\linewidth}
 %\renewcommand*\raggeddictumtext{}
+%===================================================================
+% paragraph decoration
+%===================================================================
+\RequirePackage[ornament]{froufrou}
+\NewDocumentCommand{\pardecoration}{O{\decocolor}O{fleuron}O{}}{%
+    #3
+    \noindent{\color{#1}\froufrou[#2]}\par%
+    #3
+}
 \endinput

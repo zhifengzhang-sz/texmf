@@ -1,5 +1,5 @@
-%\documentclass[11pt,dark=4508]{QIBook}
-\documentclass[11pt,light=4405]{QIBook}
+\documentclass[11pt,dark=4508]{QIBook}
+%\documentclass[11pt,light=4502]{QIBook}
 %--------------------------------------------------------------------------------------------------
 % title page style
 %--------------------------------------------------------------------------------------------------
@@ -16,6 +16,8 @@
 \usepackage{tabularx,colortbl}
 \usepackage{enumitem}
 \usepackage{pgfplots}
+\usepackage{multicol}
+\usepackage{filecontents}
 %--------------------------------------------------------------------------------------------------
 % configuring pgfplots
 %--------------------------------------------------------------------------------------------------
@@ -41,42 +43,15 @@
     \color{\color@darken{#1}{#2}}
 }
 \makeatother
-\newcommand{\textcolordemo}{
-    \begin{wrapfigure}[1]{r}*
-        \tiny
-        \begin{tcblist}[width=.65\linewidth]{Color palette as foreground}
-            \begin{itemize}[leftmargin=*]
-                \item {\color{primary}{\bf Primary:\ }\lipsum[1]}
-                \item {\color{secondary}{\bf Secondary:\ }\lipsum[2]}
-                \item {\color{secondary2}{\bf Secondary2:\ }\lipsum[3]}
-                \item {\color{tertiary}{\bf Tertiary:\ }\lipsum[4]}
-                \item {\color{complement}{\bf Complement:\ }\lipsum[5]}
-            \end{itemize}
-        \end{tcblist}
-    \end{wrapfigure}
-}
-\newcommand{\bgcolordemo}{
-    \begin{wrapfigure}[1]{l}*
-    \tiny
-    \begin{tcblist}[width=.65\linewidth]{Color palette as background}
-    \begin{itemize}[leftmargin=*]
-        \item {\colorbox{primary}{\parbox[t]{.95\linewidth}{\color{primaryc}{\bf Primary:\ }\lipsum[1]}}}
-        \item {\colorbox{secondary}{\parbox[t]{.95\linewidth}{\color{secondaryc}{\bf Secondary:\ }\lipsum[2]}}}
-        \item {\colorbox{secondary2}{\parbox[t]{.95\linewidth}{\color{secondary2c}{\bf Secondary2:\ }\lipsum[3]}}}
-        \item {\colorbox{tertiary}{\parbox[t]{.95\linewidth}{\color{tertiaryc}{\bf Tertiary:\ }\lipsum[4]}}}
-        \item {\colorbox{complement}{\parbox[t]{.95\linewidth}{\color{complementc}{\bf Complement:\ }\lipsum[5]}}}
-    \end{itemize}
-    \end{tcblist}
-\end{wrapfigure}
-}
+\def\theendseperator{\pardecoration[\decocolor][closing][\vfill]}
 \begin{document}
-\titlehead{Topics in Mathematics }
-\subject{Signal Processing }
-\title{Adapted Wavelet Analysis from\\ Theory to Software }
+\titlehead{Topics in Typesetting}
+\subject{Latex Styling}
+\title{A Demo for the QIBook Class}
 \subtitle{}
-\author{Mladen Victor Wickerhauser }
-\date{1993}
-\publishers{A K Peters }
+\author{Zhifeng Zhang}
+\date{2023}
+\publishers{Tian Yi Publishing}
 \makeatletter
 \qi@titlepage
 \makeatother
@@ -88,34 +63,38 @@
 \lipsum[6]
 \section{Using palette as foreground color}
 \lipsum[7]
-\textcolordemo
-\lipsum[8-12]
+\setCodeTheme{basic}{font}{\sffamily\tiny}
+{\tiny
+    \input{colorfgfull.tex}
+}
+\lipsum[8]
 \section{Using palette as background color}
 \lipsum[7]
-\bgcolordemo
+\begin{wrapfigure}{r}*
+    \tiny
+    \input{colorbg.tex}
+\end{wrapfigure}
 \lipsum[8-12]
 \section{Defining color model}
 \subsection{Direct definitions}
-\pgfkeys{/qi/common/color
-    ,primary={HTML}{BF8709}
-    ,secondary={HTML}{EAC57D}
-    ,secondary2={HTML}{B9BBDE}
-    ,tertiary={HTML}{807490}
-    ,complement={HTML}{523857}
-}
 \lipsum[7]
-\textcolordemo
-\lipsum[8-12]
+\begin{wrapfigure}{l}*
+    \tiny
+    \input{colorfg.tex}
+\end{wrapfigure}
+\lipsum[8-10]
 \subsection{Using API}
-\qicolormodel{4574}{583E26}{A78B71}{F7C815}{EC9704}{9C4A1A}
 \lipsum[7]
-\textcolordemo
+\begin{wrapfigure}{r}*
+    \tiny
+    \input{colorfg.tex}
+\end{wrapfigure}
 \lipsum[8-12]
-\section{Model text}
-\qicolormodel{4502}{BF8709}{EAC57D}{B9BBDE}{807490}{523857}
-\qicolormodeltext{4502}{f2f3f4}{131516}{131516}{f2f3f4}{f2f3f4}
+\section{Setting text colors}
 \lipsum[7]
-\bgcolordemo
+{\tiny
+    \input{colorbgfull.tex}
+}
 \lipsum[8-12]
 \section{Tint and shade}
 \subsection{Tint}
@@ -131,4 +110,72 @@
     \item {\darken{primary}{50}primary darken by 50}
     \item {\darken{primary}{75}primary darken by 75}
 \end{itemize}
+\setchapterpreamble[ul][.375\linewidth]{%
+    \vskip -4em
+    \dictum[Lewis Carroll]{%
+        Begin at the beginning, and go on till you come to the end: then stop.}
+    \vskip 3em
+}
+\chapter{Decorative Elements}
+\section{Epigraph}
+\lipsum[1-4]
+\section{Lettrine}
+\lettrine{L}{orem ipsum}\ \lipsum[5-8]
+\section{Chapter decoration}
+\lipsum[9-10]
+\pardecoration[\decocolor][dinkus]
+\lipsum[11-15]
+\pardecoration
+\lipsum[16-19]
+\theendseperator
+\chapter{Structural Elements}
+\section{Page colors defined in pgfkeys}
+\lipsum[20]
+\begin{wrapfigure}{r}*
+    \footnotesize
+    \input{pagecolor.tex}
+\end{wrapfigure}
+\lipsum[21-27]
+
+\chapter{Textual Tools}
+\section{Multi-columns}
+\subsection{Source code list}
+\lipsum[20-22]
+\begin{multicols}{2}
+    \lstset{numbers=left,
+        numberstyle=\tiny,
+        numbersep=5pt,
+        numberfirstline=true,
+        firstnumber=1}%, stepnumber=5}
+    \lstset{xleftmargin=2em}
+    \lstset{morecomment=[is]{\%/*}{*/}}
+    \tiny
+    \tcbcodefile[listing only]{../../tex/latex/QICommon.sty}{QICommon.sty}
+\end{multicols}
+\lipsum[23-25]
+\subsection{Text}
+\lipsum[1]
+\begin{multicols}{3}
+    \lipsum[1-10]
+\end{multicols}
+\lipsum[2-5]
+\section{Wrapping text around a block element}
+\subsection{wrapfigure}
+\subsection{wraptable}
+\subsection{wraptext}
+
+\chapter{Theorem Type of Elements}
+
+\chapter{Block Elements}
+\section{Tables}
+\section{Figures}
+
+\chapter{Box Elements}
+\section{Code List}
+\section{Tables}
+\section{Lists}
+\section{Remark}
+\section{Note}
+\section{Figures}
+\section{Examples}
 \end{document}

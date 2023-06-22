@@ -12,13 +12,11 @@
 
 \def\qicommonthemepath{/qi/common/theme settings}
 \pgfkeys{\qicommonthemepath/.is family}
-\pgfkeys{/handlers/.colorlet/.code=\pgfkeysalso{\pgfkeyscurrentpath/.code=\colorlet{#1}{##1}}}
-
-\newcommand*{\qiname}[1]{\textbf{\textcolor{complement}{#1}}}
-
-%============================================================================================
+\pgfkeys{/handlers/.colorlet/.code=
+    \pgfkeysalso{\pgfkeyscurrentpath/.code=\colorlet{#1}{##1}}}
+%/*============================================================================================*/
 % code list styling parameters
-%============================================================================================
+%/*============================================================================================*/
 \pgfkeys{\qicommonthemepath/code/.is family}
 \pgfkeys{\qicommonthemepath/code,
     background/color/.store in=\codeBGColor,
@@ -44,9 +42,9 @@
     keepspaces/.store in=\codeKeepSpaces,
     keepspaces/.default=true,
     numbersep/.store in=\codeNumberSep,
-    numbersep/.default=2pt,
+    numbersep/.default=5pt,
     tabsize/.store in=\codeTabSize,
-    tabsize/.default=2,
+    tabsize/.default=1,
     default/.style={
             background/color,
             background/opacity,
@@ -64,9 +62,9 @@
         },
 }
 \pgfkeys{\qicommonthemepath/code,default}
-%============================================================================================
+%/*============================================================================================*/
 % caption styling
-%============================================================================================
+%/*============================================================================================*/
 \pgfkeys{\qicommonthemepath/caption/.is family}
 \pgfkeys{\qicommonthemepath/caption,
     font/.store in=\captionFont,
@@ -94,9 +92,9 @@
             background/opacity
         }
 }
-%============================================================================================
+%/*============================================================================================*/
 % theorem counters
-%============================================================================================
+%/*============================================================================================*/
 %------------------------------------------------
 % Configuring the built-in theorem environment
 %------------------------------------------------
@@ -151,10 +149,19 @@
 \newtheorem{corollary}{Corollary}[theorem]
 \newtheorem{lemma}[theorem]{Lemma}
 
-%============================================================================================
+%/*============================================================================================*/
 % api
-%============================================================================================
+%/*============================================================================================*/
 \newcommand{\useCommonTheme}[2][figure]{
     \pgfkeys{\qicommonthemepath/#1,#2}
 }
+\newcommand{\setCodeTheme}[3]{
+    \pgfkeys{\qicommonthemepath/code,
+        #1/#2=#3,
+    }
+}
+\newcommand{\resetCodeTheme}{
+    \pgfkeys{\qicommonthemepath/code,default}
+}
+\newcommand*{\qiname}[1]{\textbf{\textcolor{complement}{#1}}}
 \endinput

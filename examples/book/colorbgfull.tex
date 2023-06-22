@@ -1,0 +1,25 @@
+\begin{tcbexample}[
+        language={[latex]TeX},
+        listing side text,
+        sidebyside align=top seam,
+        segmentation style={
+                double=white,
+                draw=gray,
+                double distance=1pt,
+                line width=.25pt,solid},
+        righthand width=.525\linewidth]{Changing color palette and text colors}
+\qicolormodel{4502}{BF8709}{EAC57D}{B9BBDE}{807490}{523857}
+\qicolormodeltext{4502}{f2f3f4}{131516}{131516}{f2f3f4}{f2f3f4}
+\begin{itemize}[leftmargin=*]
+    \item {\colorbox{primary}{\parbox[t]{.95\linewidth}
+              {\color{primaryc}{\bf Primary:\ }\lipsum[1]}}}
+    \item {\colorbox{secondary}{\parbox[t]{.95\linewidth}
+              {\color{secondaryc}{\bf Secondary:\ }\lipsum[2]}}}
+    \item {\colorbox{secondary2}{\parbox[t]{.95\linewidth}
+              {\color{secondary2c}{\bf Secondary2:\ }\lipsum[3]}}}
+    \item {\colorbox{tertiary}{\parbox[t]{.95\linewidth}
+              {\color{tertiaryc}{\bf Tertiary:\ }\lipsum[4]}}}
+    \item {\colorbox{complement}{\parbox[t]{.95\linewidth}
+              {\color{complementc}{\bf Complement:\ }\lipsum[5]}}}
+\end{itemize}
+\end{tcbexample}
